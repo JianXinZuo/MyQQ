@@ -1,36 +1,36 @@
 export default {
-    CreateAccount(state,userInfo){
+    CreateAccount(state, userInfo) {
         //console.log(state,userInfo);
         state.Users = userInfo;
     },
-    AccountLogin(state,account){
+    AccountLogin(state, account) {
 
-        if(!state.IsLogin){
+        if (!state.IsLogin) {
             state.IsLogin = localStorage.getItem('IsLogin');
             state.token = localStorage.getItem('token');
             let user = localStorage.getItem('Users');
-            if(user) {
+            if (user) {
                 state.Users = JSON.parse(user);
             }
         }
 
-        if(account){
+        if (account) {
             state.IsLogin = true;
             localStorage.setItem("IsLogin", true);
             state.Users = account;
             localStorage.setItem("Users", JSON.stringify(account));
         }
     },
-    AccountLogout(state){
+    AccountLogout(state) {
         state.Users = {};
         state.token = '';
-        localStorage.setItem('token','');
-        localStorage.setItem('user_id','');
+        localStorage.setItem('token', '');
+        localStorage.setItem('user_id', '');
         localStorage.setItem('Users', '');
         localStorage.setItem('IsLogin', false);
 
         setTimeout(() => {
-            MyConnection.stop().catch(function (err) {
+            MyConnection.stop().catch(function(err) {
                 return console.log(err);
             });
         }, 50);
@@ -38,10 +38,12 @@ export default {
     },
 
     //打开连接
-    ConnectionOpen(state){
+    ConnectionOpen(state) {
         setTimeout(() => {
             console.log(MyConnection);
-            MyConnection.start().catch(function (err) {
+            MyConnection.start(() => {
+                console.log('ConnectionOpen方法打开链接成功');
+            }).catch(function(err) {
                 console.error(err.toString());
                 window.location.reload();
             });
@@ -49,41 +51,41 @@ export default {
     },
 
     //用户上线
-    ClientOnline(state, user_id){
-        if(state.IsLogin){
+    ClientOnline(state, user_id) {
+        if (state.IsLogin) {
             setTimeout(() => {
-                MyConnection.invoke("ClientOnline", user_id).catch(function (err) {
+                MyConnection.invoke("ClientOnline", user_id).catch(function(err) {
                     return console.log(err);
                 });
             }, 2000);
         }
     },
     //接收用户来的信息
-    ClientNoticeRemind(state, msg){
+    ClientNoticeRemind(state, msg) {
         state.NewNotice = JSON.parse(msg);
         state.NoticeRemind = true;
     },
     //同意添加好友
-    AgreeFriend(state){
+    AgreeFriend(state) {
         state.NoticeRemind = false;
         setTimeout(() => {
-            MyConnection.invoke("AgreeFriend", state.NewNotice.Id).catch(function (err) {
+            MyConnection.invoke("AgreeFriend", state.NewNotice.Id).catch(function(err) {
                 return console.log(err);
             });
         }, 500);
     },
     //拒绝加好友
-    RejectFriend(state){
+    RejectFriend(state) {
         state.NoticeRemind = false;
         setTimeout(() => {
-            MyConnection.invoke("RejectFriend", state.NewNotice.Id).catch(function (err) {
+            MyConnection.invoke("RejectFriend", state.NewNotice.Id).catch(function(err) {
                 return console.log(err);
             });
         }, 500);
     },
     //接收用户推送的文本数据
-    AccpetChatMsg(state, msg){
-        if(state.IsLogin){
+    AccpetChatMsg(state, msg) {
+        if (state.IsLogin) {
             // {
             //     "Id":"874410e8-5931-4d46-9339-8c3a072db89e",
             //     "From":{"Id":"16dcda59-37a1-4b1f-aa9e-db1af5bb3bfe",
@@ -105,25 +107,25 @@ export default {
             //     "CreateTime":"2018-10-11T18:03:48.8788752+08:00"
             // }
             let model = JSON.parse(msg);
-            if(model.From.Id === state.Users.id){
+            if (model.From.Id === state.Users.id) {
                 model.Me = true;
-            }else{
+            } else {
                 model.Me = false;
                 let CurrentChatUser = JSON.parse(localStorage.getItem('CurrentChatUser'));
-                if(model.From.Id !== CurrentChatUser.id){
+                if (model.From.Id !== CurrentChatUser.id) {
                     state.NewMsgCount++;
 
                     //如果用户收到的消息不是当前聊天人的ID， 就给消息列表添加一个当前人
                     setTimeout(() => {
                         let flag = 0;
-                        state.ChatUserList.forEach((item)=>{
-                            if(item.id == model.From.Id){
+                        state.ChatUserList.forEach((item) => {
+                            if (item.id == model.From.Id) {
                                 item.counter++;
                                 flag++;
                             }
                         });
 
-                        if(flag === 0){
+                        if (flag === 0) {
                             let obj = {
                                 id: model.From.Id,
                                 headImg: model.From.HeadImg,
@@ -133,7 +135,7 @@ export default {
                                 counter: 1,
                             }
                             state.ChatUserList.push(obj);
-                            localStorage.setItem('SetChatUserList',JSON.stringify(state.ChatUserList));
+                            localStorage.setItem('SetChatUserList', JSON.stringify(state.ChatUserList));
                         }
                     }, 80);
                 }
@@ -143,18 +145,18 @@ export default {
         }
     },
     //用户发送聊天信息（未启用）
-    SendMsg(state, msg){
+    SendMsg(state, msg) {
         state.ChatMessage.push(msg);
     },
     //分页加载历史聊天信息
-    LoadChatMsg(state, list){
-        if(state.IsLogin){
+    LoadChatMsg(state, list) {
+        if (state.IsLogin) {
             list.forEach(item => {
                 let msg = JSON.parse(item.message);
                 let model = eval(msg);
-                if(model.From.Id === state.Users.id){
+                if (model.From.Id === state.Users.id) {
                     model.Me = true;
-                }else{
+                } else {
                     model.Me = false;
                 }
                 state.ChatMessage.unshift(model);
@@ -162,7 +164,7 @@ export default {
         }
     },
     //设置消息用户列表
-    SetChatUserList(state, use_info){
+    SetChatUserList(state, use_info) {
         console.log('设置消息用户列表');
         let flag = 0;
         let model = use_info;
@@ -170,17 +172,17 @@ export default {
         model.counter = 0;
         let str = localStorage.getItem('SetChatUserList');
         console.log(str);
-        if(str){
+        if (str) {
             state.ChatUserList = JSON.parse(str);
             state.ChatUserList.forEach((item) => {
-                if(item.id == model.id){
+                if (item.id == model.id) {
                     flag++;
                 }
             });
         }
-        if(flag === 0 ){
+        if (flag === 0) {
             state.ChatUserList.push(model);
         }
-        localStorage.setItem('SetChatUserList',JSON.stringify(state.ChatUserList));
+        localStorage.setItem('SetChatUserList', JSON.stringify(state.ChatUserList));
     }
 }

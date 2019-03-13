@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WalletComponent.ChatMessage;
 using WalletComponent.Domains;
 
 namespace WalletComponent.Repositorys
@@ -16,6 +17,6 @@ namespace WalletComponent.Repositorys
         /// <param name="to">接受人</param>
         /// <param name="total">总数</param>
         /// <returns></returns>
-        List<ChatMessages> GetList(int start, int end, string from, string to, out int total);
+        List<ChatMsg> GetList(int start, int end, string from, string to, out int total);
     }
 }

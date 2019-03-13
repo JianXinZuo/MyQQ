@@ -12,7 +12,7 @@ using WalletComponent.Repositorys;
 
 namespace WalletAPI.Controllers
 {
-    [Authorize(Policy = "SuperAdminOnly")]
+    
     //[Authorize(Roles = "admin")]
     //[Consumes("application/json", "multipart/form-data")]   //此处为新增
     [Route("api/[controller]")]
@@ -29,6 +29,7 @@ namespace WalletAPI.Controllers
         public IMapper Mapper { get; set; }
 
         // GET: api/User
+        
         [HttpGet]
         public JsonResult Get()
         {
@@ -50,6 +51,7 @@ namespace WalletAPI.Controllers
 
         // GET: api/User/5
         [HttpGet("{id}")]
+        [Authorize(Policy = "SuperAdminOnly")]
         public JsonResult Get(Guid id)
         {
             try
@@ -67,6 +69,7 @@ namespace WalletAPI.Controllers
 
         // GET: api/User/GetUserByUserName?uname=
         [HttpGet("GetUserByUserName")]
+        [Authorize(Policy = "SuperAdminOnly")]
         public JsonResult Get(string uname)
         {
             try
@@ -80,7 +83,6 @@ namespace WalletAPI.Controllers
                 return new JsonResult(new { isok = false, data = "", msg = exp.Message });
             }
         }
-
 
         // POST: api/User
         [HttpPost]
@@ -110,6 +112,7 @@ namespace WalletAPI.Controllers
 
         // PUT: api/User/5
         [HttpPut("{id}")]
+        [Authorize(Policy = "SuperAdminOnly")]
         public JsonResult Put(Guid id, [FromBody] UserDTO model)
         {
             return new JsonResult(new { isok = true, data = "", msg = "成功" });
@@ -117,6 +120,7 @@ namespace WalletAPI.Controllers
 
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = "SuperAdminOnly")]
         public void Delete(Guid id)
         {
         }

@@ -5,6 +5,16 @@ using System.Text;
 
 namespace WalletComponent.ChatMessage
 {
+    public class ChatMsg
+    {
+        public Guid Id { get; set; }
+        public string From { get; set; }
+        public string To { get; set; }
+        public string Message { get; set; }
+        public Int32 Type { get; set; }
+        public DateTime CreateTime { get; set; }
+
+    }
     public class AddFriend
     {
         public string Id { get; set; }

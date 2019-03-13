@@ -17,13 +17,19 @@
 
     <script>
         // var connection = new signalR.HubConnectionBuilder()
+        //     .withUrl("http://localhost:5000/myChatHub", {
+        //         skipNegotiation: true,
+        //         transport: signalR.HttpTransportType.WebSockets
+        //     }).build();
+
+        // var connection = new signalR.HubConnectionBuilder()
         // .withUrl("https://mychat01-dev-as.azurewebsites.net/myChatHub", {
         //     skipNegotiation: true,
         //     transport: signalR.HttpTransportType.WebSockets
         // }).build();
 
         var connection = new signalR.HubConnectionBuilder()
-            .withUrl("http://localhost:5000/myChatHub", {
+            .withUrl("http://140.143.80.72:5000/myChatHub", {
                 skipNegotiation: true,
                 transport: signalR.HttpTransportType.WebSockets
             }).build();

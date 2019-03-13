@@ -29,6 +29,7 @@ export default {
         console.log('断开链接方法：',msg);
     });
     
+    //接收消息
     MyConnection.on("ReceiveMessage", (msg)=>{
         console.log(msg);
         this.$store.dispatch('AccpetChatMsg', msg);
