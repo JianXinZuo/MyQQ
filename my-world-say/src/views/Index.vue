@@ -3,7 +3,7 @@
 
         <v-navigation-drawer fixed v-model="IsLfetNavNenu" app>
             
-            <v-img :aspect-ratio="16/9" :src='headImg' width="300" height="170">
+            <v-img :aspect-ratio="16/9" :src='headImg' width="300" height="170" >
             <!-- src="https://cdn.vuetifyjs.com/images/parallax/material.jpg" -->
                 <v-layout pa-2 column fill-height class="lightbox white--text">
                 <v-spacer></v-spacer>
@@ -101,6 +101,11 @@
             </v-bottom-nav>
         </v-footer>
 
+<input id="avatarFileUpload" class="file" name="file" style="display:none;" 
+                    type="file" 
+                    accept="image/png,image/gif,image/jpeg" 
+                    @change="ModifyHeadImg"/>
+
         <v-dialog v-model="NoticeRemind" persistent >
             <v-card>
                 <v-card color="blue" class="white--text">
@@ -136,6 +141,8 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import MyAxios from 'axios' //这个用来上传图片提交FormData表单
+
 export default {
     name:'Index',
     data () {
@@ -156,12 +163,20 @@ export default {
                     }
                 },{
                     icon:'',
+                    menuName:'更换头像',
+                    myEvent:()=>{
+                        console.log('更换新头像');
+                        document.getElementById("avatarFileUpload").click();
+                    }
+                },{
+                    icon:'',
                     menuName:'扫一扫',
                     myEvent:()=>{
                         console.log('扫一扫操作');
                     }
                 }
             ],
+            avatarSrc:'', 
             userName:'',
             headImg:'',
             nickName:'',
@@ -222,7 +237,35 @@ export default {
         Logout(){
             this.$store.dispatch('AccountLogout');
             this.$router.push({ path:'/login'});
-        }
+        },
+        ModifyHeadImg(e){
+
+            let file = e.target.files[0];
+            let formData = new FormData(); //创建form对象
+            formData.append('file',file);//通过append向form对象添加数据
+
+            if (window.FileReader) {
+                var reader = new FileReader();
+                reader.onload = (e) => {
+                    this.headImg = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+
+            let config = {
+                headers:{'Content-Type':'multipart/form-data'}  //添加请求头
+            };
+
+            MyAxios.post('/api/FileUpLoad',formData,config).then(res =>{
+                console.log(res);
+
+                if(res.data.isok){
+                    this.headImg = res.data.data;
+                }
+
+            });
+
+        },
     }
 }
 </script>
