@@ -91,7 +91,7 @@
         <v-dialog v-model="toast" hide-overlay persistent width="300">
             <v-card color="primary" dark>
                 <v-card-text>
-                    正在添加好友...
+                    {{ toastText }}
                     <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
                 </v-card-text>
             </v-card>
@@ -108,7 +108,7 @@ export default {
     data () {
         return {
             BaseURL:'https://chatdemo01.blob.core.windows.net/',
-            toastText: '',
+            toastText: '正在添加好友...',
             toast: false, 
             isLoading: false,
             headImg:'',
@@ -131,7 +131,6 @@ export default {
                 this.userList = [];
                 return;
             }
-                
             //加载数据
             this.$axios.get('/api/user/GetUserByUserName?uname=' + this.searchUser).then(res => {
                 console.log(res);
@@ -150,7 +149,12 @@ export default {
                     return console.error(err.toString());
                 });
             }else{
-                console.log('无法添加自己为好友');
+                console.log('');
+                this.toastText = '无法添加自己为好友';
+                this.toast = true;
+                setTimeout(() => {
+                    this.toast = false;
+                }, 2000);
             }
             
         }

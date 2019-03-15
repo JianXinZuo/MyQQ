@@ -12,9 +12,8 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/api': {
-                target: 'http://140.143.80.72:5000/api', //接口域名
-                //target: 'http://localhost:5000/api', //接口域名
-                //target:'https://mychat01-dev-as.azurewebsites.net/api',  //https 不行
+                //target: 'http://140.143.80.72:5000/api', //接口域名
+                target: 'http://localhost:5000/api', //接口域名
                 changeOrigin: true, //是否跨域
                 pathRewrite: {
                     '^/api': '/'

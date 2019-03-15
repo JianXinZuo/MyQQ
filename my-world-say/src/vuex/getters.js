@@ -1,32 +1,35 @@
-export default  {
-    onlineTotal: (state)=>{
+export default {
+    onlineTotal: (state) => {
         return state.onlineTotal
     },
-    Users: (state)=>{
+    Users: (state) => {
         return state.Users
     },
-    NoticeRemind: (state)=>{
+    GetUsers: (state) => {
+        return state.Users
+    },
+    NoticeRemind: (state) => {
         return state.NoticeRemind
     },
-    GetNewNotice: (state)=>{
+    GetNewNotice: (state) => {
         return state.NewNotice
     },
-    GetBaseURL: (state)=>{
+    GetBaseURL: (state) => {
         return state.BaseURL;
     },
-    GetChatMassage: (state)=>{
+    GetChatMassage: (state) => {
         return state.ChatMessage;
     },
-    CurrentChatUser: (state)=>{
+    CurrentChatUser: (state) => {
         return state.CurrentChatUser;
     },
-    GetNewMsgCount:(state)=>{
+    GetNewMsgCount: (state) => {
         return state.NewMsgCount;
     },
-    MyReceiveCount: (state)=>{
+    MyReceiveCount: (state) => {
         return state.MyReceiveCount;
     },
-    GetChatUserList: (state)=>{
-        return state.ChatUserList;
+    GetChatUserList: (state) => {
+        return state.chat_user_list;
     }
 }

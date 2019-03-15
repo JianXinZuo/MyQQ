@@ -3,6 +3,10 @@ export default {
         //console.log(state,userInfo);
         state.Users = userInfo;
     },
+    UpdateAccount(state, userinfo) {
+        state.Users = userinfo;
+    },
+
     AccountLogin(state, account) {
 
         if (!state.IsLogin) {
@@ -21,6 +25,7 @@ export default {
             localStorage.setItem("Users", JSON.stringify(account));
         }
     },
+
     AccountLogout(state) {
         state.Users = {};
         state.token = '';
@@ -28,60 +33,21 @@ export default {
         localStorage.setItem('user_id', '');
         localStorage.setItem('Users', '');
         localStorage.setItem('IsLogin', false);
-
-        setTimeout(() => {
-            MyConnection.stop().catch(function(err) {
-                return console.log(err);
-            });
-        }, 50);
-
-    },
-
-    //打开连接
-    ConnectionOpen(state) {
-        setTimeout(() => {
-            console.log(MyConnection);
-            MyConnection.start(() => {
-                console.log('ConnectionOpen方法打开链接成功');
-            }).catch(function(err) {
-                console.error(err.toString());
-                window.location.reload();
-            });
-        }, 50);
-    },
-
-    //用户上线
-    ClientOnline(state, user_id) {
-        if (state.IsLogin) {
-            setTimeout(() => {
-                MyConnection.invoke("ClientOnline", user_id).catch(function(err) {
-                    return console.log(err);
-                });
-            }, 2000);
-        }
-    },
-    //接收用户来的信息
-    ClientNoticeRemind(state, msg) {
-        state.NewNotice = JSON.parse(msg);
-        state.NoticeRemind = true;
+        localStorage.setItem('chat_user_list', '');
     },
     //同意添加好友
     AgreeFriend(state) {
         state.NoticeRemind = false;
-        setTimeout(() => {
-            MyConnection.invoke("AgreeFriend", state.NewNotice.Id).catch(function(err) {
-                return console.log(err);
-            });
-        }, 500);
+        MyConnection.invoke("AgreeFriend", state.NewNotice.Id).catch(function(err) {
+            console.log(err);
+        });
     },
     //拒绝加好友
     RejectFriend(state) {
         state.NoticeRemind = false;
-        setTimeout(() => {
-            MyConnection.invoke("RejectFriend", state.NewNotice.Id).catch(function(err) {
-                return console.log(err);
-            });
-        }, 500);
+        MyConnection.invoke("RejectFriend", state.NewNotice.Id).catch(function(err) {
+            return console.log(err);
+        });
     },
     //接收用户推送的文本数据
     AccpetChatMsg(state, msg) {
@@ -89,7 +55,8 @@ export default {
             // {
             //     "Id":"874410e8-5931-4d46-9339-8c3a072db89e",
             //     "From":{"Id":"16dcda59-37a1-4b1f-aa9e-db1af5bb3bfe",
-            //         "UserName":"admin","NickName":"小新",
+            //         "UserName":"admin",
+            //         "NickName":"小新",
             //         "HeadImg":"/upload/1c0ffb31-653f-4531-8410-6ea53a380950.jpg",
             //         "Mobile":null,
             //         "Sex":true,
@@ -106,83 +73,114 @@ export default {
             //     "Type":1,
             //     "CreateTime":"2018-10-11T18:03:48.8788752+08:00"
             // }
+
             let model = JSON.parse(msg);
+
+
+            /* 判断新消息是否在列表中 */
+            let index = -1;
+
+            /*判断是否自己发的消息*/
             if (model.From.Id === state.Users.id) {
                 model.Me = true;
+                index = state.chat_user_list.findIndex((user, index) => {
+                    return user.id === state.current_chat_user_id
+                });
             } else {
                 model.Me = false;
-                let CurrentChatUser = JSON.parse(localStorage.getItem('CurrentChatUser'));
-                if (model.From.Id !== CurrentChatUser.id) {
-                    state.NewMsgCount++;
+                index = state.chat_user_list.findIndex((user, index) => {
+                    return user.id === model.From.Id;
+                });
+            }
+            /*不在列表中的消息就添加到消息列表 */
+            if (index === -1) {
+                var user = {
+                    id: model.From.Id,
+                    user_name: model.From.UserName,
+                    nick_name: model.From.NickName,
+                    head_img: model.From.HeadImg,
+                    mobile: model.From.Mobile,
+                    sex: model.From.sex,
+                    new_msg_count: 1,
+                    msg_list: []
+                }
+                user.msg_list.push(model);
+                state.chat_user_list.push(user);
+            } else {
 
-                    //如果用户收到的消息不是当前聊天人的ID， 就给消息列表添加一个当前人
-                    setTimeout(() => {
-                        let flag = 0;
-                        state.ChatUserList.forEach((item) => {
-                            if (item.id == model.From.Id) {
-                                item.counter++;
-                                flag++;
-                            }
-                        });
-
-                        if (flag === 0) {
-                            let obj = {
-                                id: model.From.Id,
-                                headImg: model.From.HeadImg,
-                                nickName: model.From.NickName,
-                                userName: model.From.UserName,
-                                content: model.Text,
-                                counter: 1,
-                            }
-                            state.ChatUserList.push(obj);
-                            localStorage.setItem('SetChatUserList', JSON.stringify(state.ChatUserList));
-                        }
-                    }, 80);
+                state.chat_user_list[index].msg_list.push(model);
+                //判断是否当前聊天的人
+                if (state.current_chat_user_id === state.chat_user_list[index].id) {
+                    state.chat_user_list[index].new_msg_count = 0;
+                    state.MyReceiveCount++;
+                    //state.ChatMessage.push(model);
+                } else {
+                    state.chat_user_list[index].new_msg_count++;
                 }
             }
-            state.ChatMessage.push(model);
-            state.MyReceiveCount++;
         }
     },
     //用户发送聊天信息（未启用）
     SendMsg(state, msg) {
-        state.ChatMessage.push(msg);
+        //state.ChatMessage.push(msg);
+        /* 判断新消息是否在列表中 */
+        let index = state.chat_user_list.findIndex((user, index) => {
+            return user.id === state.current_chat_user_id
+        });
+        state.chat_user_list[index].msg_list.push(msg);
     },
     //分页加载历史聊天信息
     LoadChatMsg(state, list) {
         if (state.IsLogin) {
+
+            /* 判断新消息是否在列表中 */
+            let index = state.chat_user_list.findIndex((user, index) => {
+                return user.id === state.current_chat_user_id;
+            });
             list.forEach(item => {
                 let msg = JSON.parse(item.message);
                 let model = eval(msg);
+
                 if (model.From.Id === state.Users.id) {
                     model.Me = true;
                 } else {
                     model.Me = false;
                 }
-                state.ChatMessage.unshift(model);
+                state.chat_user_list[index].msg_list.unshift(model);
+                state.ChatMessage = state.chat_user_list[index].msg_list;
             });
+            state.chat_user_list[index]['new_msg_count'] = 0;
         }
     },
     //设置消息用户列表
     SetChatUserList(state, use_info) {
-        console.log('设置消息用户列表');
-        let flag = 0;
-        let model = use_info;
-        model.content = '';
-        model.counter = 0;
-        let str = localStorage.getItem('SetChatUserList');
-        console.log(str);
-        if (str) {
-            state.ChatUserList = JSON.parse(str);
-            state.ChatUserList.forEach((item) => {
-                if (item.id == model.id) {
-                    flag++;
-                }
-            });
+        console.log('设置消息用户列表', use_info);
+
+        let index = state.chat_user_list.findIndex((user, index) => {
+            return user.id === use_info.id
+        });
+
+        if (index === -1) {
+            var user = {
+                id: use_info.id,
+                user_name: use_info.userName,
+                nick_name: use_info.nickName,
+                head_img: use_info.headImg,
+                mobile: use_info.mobile,
+                sex: use_info.sex,
+                new_msg_count: 0,
+                msg_list: []
+            }
+            state.chat_user_list.push(user);
+            state.ChatMessage = [];
+        } else {
+
+            state.chat_user_list[index].new_msg_count = 0; //每次打开列表后重置消息数量为0
+            state.ChatMessage = state.chat_user_list[index].msg_list;
         }
-        if (flag === 0) {
-            state.ChatUserList.push(model);
-        }
-        localStorage.setItem('SetChatUserList', JSON.stringify(state.ChatUserList));
+
+        state.current_chat_user_id = use_info.id;
+        localStorage.setItem('chat_user_list', JSON.stringify(state.chat_user_list));
+        localStorage.setItem('CurrentChatUser', JSON.stringify(use_info));
     }
 }

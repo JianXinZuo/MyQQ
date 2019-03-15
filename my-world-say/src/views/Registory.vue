@@ -88,7 +88,6 @@
     </v-layout>
 </template>
 <script>
-import MyAxios from 'axios' //这个用来上传图片提交FormData表单
 export default {
     name: 'Registory',
     data () {
@@ -100,7 +99,7 @@ export default {
             msg: 'sss',
             SexItem:["男","女"],
             account:{
-                userName:'admin',
+                userName:'',
                 password:'',
                 age:'20',
                 sex: '男',
@@ -134,7 +133,7 @@ export default {
                 headers:{'Content-Type':'multipart/form-data'}  //添加请求头
             };
 
-            MyAxios.post('/api/FileUpLoad',formData,config).then(res =>{
+            this.$axios.post('/api/FileUpLoad',formData,config).then(res =>{
                 console.log(res);
 
                 if(res.data.isok){
@@ -142,21 +141,28 @@ export default {
                     this.account.HeadImg = res.data.data;
                 }
 
+            }).catch((err)=>{
+                console.log(err);
             });
 
         },
         RegistoryFun(){
-            this.toast = true;
 
             let model = {
-                UserName: this.account.userName,
-                PassWord: this.account.password,
-                NickName: this.account.NickName,
+                UserName: this.account.userName.replace(/[^\u4e00-\u9fa5a-zA-Z0-9\w]/g,''),
+                PassWord: this.account.password.replace(/[^\u4e00-\u9fa5a-zA-Z0-9\w]/g,''),
+                NickName: this.account.NickName.replace(/[^\u4e00-\u9fa5a-zA-Z0-9\w]/g,''),
                 HeadImg: this.account.HeadImg,
                 Sex: false,
                 Age: this.account.age,
                 FullName: ''
             };
+
+            if(!model.UserName || !model.PassWord || !model.NickName || !model.HeadImg){
+                alert('请先上传头像，并输入昵称、账号、密码');
+                return;
+            }
+
             if(this.account.sex == "男"){
                 model.Sex = true;
             }else if (this.account.sex == "女"){
@@ -165,6 +171,7 @@ export default {
                 model.Sex = false;
             }
 
+            this.toast = true;
             this.$axios.post('/api/user', model).then((res)=>{
                 console.log(res);
                 this.toast = false;

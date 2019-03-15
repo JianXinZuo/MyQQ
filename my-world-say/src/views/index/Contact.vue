@@ -62,9 +62,9 @@ export default {
     methods:{
         OpenChat(info){
             localStorage.setItem('to_id',info.id);
-            localStorage.setItem('CurrentChatUser',JSON.stringify(info));
-            this.$store.dispatch('SetChatUserList',info);
-            this.$router.push(
+            //localStorage.setItem('CurrentChatUser',JSON.stringify(info));
+            this.$store.dispatch('SetChatUserList',info).then((res)=>{
+                this.$router.push(
                 { 
                     path:'/MyChat',
                     name:'MyChat',
@@ -73,6 +73,7 @@ export default {
                         val: info.id
                     }
                 });
+            });
         }
     }
 }

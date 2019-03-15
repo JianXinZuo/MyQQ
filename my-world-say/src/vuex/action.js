@@ -1,63 +1,58 @@
 export default {
 
     //创建账户
-    CreateAccount({commit}, userInfo){
+    CreateAccount({ commit }, userInfo) {
         console.log('触发了CreateAccount方法');
-        commit('CreateAccount',userInfo);
+        commit('CreateAccount', userInfo);
+    },
+
+    //更新用户信息
+    UpdateAccount({ commit }, userinfo) {
+        commit('UpdateAccount', userinfo);
     },
 
     //登录
-    AccountLogin({ commit }, account){
+    AccountLogin({ commit }, account) {
         //const user_id = localStorage.getItem('user_id')
         console.log('触发了AccountLogin 方法');
-        commit(
-            'AccountLogin',
-            account
-        );
+        commit('AccountLogin', account);
     },
 
     //登出
-    AccountLogout({ commit }){
-        //console.log('AccountLogout 方法');
+    AccountLogout({ commit }) {
         commit('AccountLogout');
     },
 
-    InitConnectStart({ commit }){
-        commit('ConnectionOpen');
-    },
-
-    //用户上线
-    ClientOnline({ commit },user_id){
-        commit('ClientOnline',user_id);
-    },
-
     //接收添加好友通知
-    ClientNoticeRemind({ commit }, msg ){
-        commit('ClientNoticeRemind', msg );
+    ClientNoticeRemind({ commit }, msg) {
+        commit('ClientNoticeRemind', msg);
     },
 
     //同意添加好友
-    AgreeFriend({commit}){
+    AgreeFriend({ commit }) {
         commit('AgreeFriend');
     },
 
     //拒绝添加好友
-    RejectFriend({commit}){
+    RejectFriend({ commit }) {
         commit('RejectFriend');
     },
 
     //接受文本消息
-    AccpetChatMsg({ commit }, msg){
+    AccpetChatMsg({ commit }, msg) {
         commit('AccpetChatMsg', msg);
     },
-    SendMsg({ commit }, msg){
+
+    SendMsg({ commit }, msg) {
         commit('SendMsg', msg);
     },
+
     //下拉加载消息
-    LoadChatMsg({commit}, list){
-        commit('LoadChatMsg',list);
+    LoadChatMsg({ commit }, list) {
+        commit('LoadChatMsg', list);
     },
-    SetChatUserList({commit},use_info){
-        commit('SetChatUserList',use_info);
+
+    SetChatUserList({ commit }, use_info) {
+        commit('SetChatUserList', use_info);
     }
 }

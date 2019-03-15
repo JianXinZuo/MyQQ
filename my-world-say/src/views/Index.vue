@@ -8,8 +8,8 @@
                 <v-layout pa-2 column fill-height class="lightbox white--text">
                 <v-spacer></v-spacer>
                 <v-flex shrink>
-                    <div class="subheading">{{ nickName }}</div>
-                    <div class="body-1">{{ userName }}</div>
+                    <div class="subheading">{{ GetUsers.nickName }}</div>
+                    <div class="body-1">{{ GetUsers.userName }}</div>
                 </v-flex>
                 </v-layout>
             </v-img>
@@ -141,8 +141,6 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import MyAxios from 'axios' //这个用来上传图片提交FormData表单
-
 export default {
     name:'Index',
     data () {
@@ -170,7 +168,7 @@ export default {
                     }
                 },{
                     icon:'',
-                    menuName:'扫一扫',
+                    menuName:'刷新好友列表',
                     myEvent:()=>{
                         console.log('扫一扫操作');
                     }
@@ -206,6 +204,7 @@ export default {
             'NoticeRemind',
             'GetNewNotice',
             'GetBaseURL',
+            'GetUsers'
         ]),
 
     },
@@ -235,8 +234,16 @@ export default {
             console.log('跳转到Setting页面');
         },
         Logout(){
-            this.$store.dispatch('AccountLogout');
-            this.$router.push({ path:'/login'});
+            this.$store.dispatch('AccountLogout').then(()=>{
+
+                MyConnection.stop().then(()=>{
+                    this.$router.push({ path: '/login' });
+                }).catch(function(err) {
+                    console.log(err);
+                });
+
+            });
+            
         },
         ModifyHeadImg(e){
 
@@ -256,13 +263,31 @@ export default {
                 headers:{'Content-Type':'multipart/form-data'}  //添加请求头
             };
 
-            MyAxios.post('/api/FileUpLoad',formData,config).then(res =>{
+            this.$axios.post('/api/FileUpLoad',formData,config).then(res =>{
                 console.log(res);
 
-                if(res.data.isok){
-                    this.headImg = res.data.data;
+                if(!res.isok){
+                    return;
                 }
 
+                let tempImg = res.data;
+                let str = localStorage.getItem('Users');
+                let user =JSON.parse(str);
+                console.log(user);
+                user.headImg = tempImg;
+
+                this.$axios.put('/api/User/' + user.id, user).then((res)=>{
+
+                    console.log(res);
+                    localStorage.setItem('Users', JSON.stringify(res));
+                    this.$store.dispatch('UpdateAccount',res)
+                }).catch((err)=>{
+                    
+                    console.log(err);
+                })
+
+            }).catch((err)=>{
+                console.log(err);
             });
 
         },

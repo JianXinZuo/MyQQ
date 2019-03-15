@@ -25,9 +25,22 @@ export default {
 
                 localStorage.setItem("Users", JSON.stringify(res.data));
 
-                this.$store.dispatch('AccountLogin',res.data);  //用户登录
-                this.$store.dispatch('InitConnectStart');   //打开Signalr连接
-                this.$store.dispatch('ClientOnline',user_id);   //用户上线
+                this.$store.dispatch('AccountLogin',res.data).then(()=>{    //用户登录
+                    console.log('登陆操作');
+
+                    MyConnection.start().then(() => {
+                        console.log('ConnectionOpen方法打开链接成功');
+                        MyConnection.invoke("ClientOnline", res.data.id).then(() => {
+                            console.log('用户上线成功');
+                        }).catch(function(err) {
+                            console.log(err);
+                        });
+                    }).catch(function(err) {
+                        console.log(err);
+                    });
+                }).catch(err =>{
+                    console.log(err);
+                });
             }
             
         }).catch((err)=>{

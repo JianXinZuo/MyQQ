@@ -100,6 +100,8 @@ export default {
         let toUser = JSON.parse(localStorage.getItem('CurrentChatUser'));
         this.CurrentChatUser = toUser;
         console.log('创建成功');
+
+        //if()
     },
     mounted(){
         this.dom = document.getElementById('chat-container');
@@ -166,6 +168,7 @@ export default {
             setTimeout(() => {
                 let num = this.dom.scrollHeight;
                 this.dom.scrollTo(0,num);
+                console.log();
             }, 0);
         }
     },
@@ -175,7 +178,8 @@ export default {
                 let model = {
                     "Id":"874410e8-5931-4d46-9339-8c3a072db89e",
                     "From":{"Id":"16dcda59-37a1-4b1f-aa9e-db1af5bb3bfe",
-                        "UserName":"admin","NickName":"小新",
+                        "UserName":"admin",
+                        "NickName":"小新",
                         "HeadImg":"/upload/1c0ffb31-653f-4531-8410-6ea53a380950.jpg",
                         "Mobile":null,
                         "Sex":true,
@@ -236,13 +240,9 @@ export default {
             let msgId = Guid.v1();
 
             if(msg){
-                MyConnection.invoke("SendMessage",
-                    msgId,
-                    this.user_id, 
-                    this.to_id, 
-                    msg, 
-                    "text"
-                ).catch(function (err) {
+                MyConnection.invoke("SendMessage", msgId, this.user_id, this.to_id, msg, "text").then(()=>{
+                    console.log('发送消息：',msg,'完毕');
+                }).catch(function (err) {
                     return console.error(err.toString());
                 });
             }

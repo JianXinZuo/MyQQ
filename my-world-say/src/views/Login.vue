@@ -106,7 +106,7 @@ export default {
                     this.$store.dispatch("AccountLogin", res.data.user);
 
                     //this.$store.dispatch('InitConnectStart');   //打开Signalr
-                    this.$store.dispatch('ClientOnline');
+                    //this.$store.dispatch('ClientOnline');
 
                     this.$router.push({ path:'/'});
                 }
