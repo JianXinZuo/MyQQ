@@ -16,6 +16,5 @@ namespace WalletComponent.Services
         List<Users> GetUserByUserName(string uName);
         Users UserLogin(UserDTO vm);
         bool IsExists(string userName);
-
     }
 }

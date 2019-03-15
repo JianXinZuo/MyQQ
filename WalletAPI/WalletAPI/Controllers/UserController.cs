@@ -115,7 +115,28 @@ namespace WalletAPI.Controllers
         [Authorize(Policy = "SuperAdminOnly")]
         public JsonResult Put(Guid id, [FromBody] UserDTO model)
         {
-            return new JsonResult(new { isok = true, data = "", msg = "成功" });
+            try
+            {
+                var user = UsersRepository.Load(model.Id);
+                if (user != null)
+                {
+                    user.HeadImg = model.HeadImg;
+                    user.PassWord = model.PassWord;
+                    user.NickName = model.NickName;
+                    UsersRepository.SaveChanges();
+                    var res = Mapper.Map<UserDTO>(user);
+                    return new JsonResult(new { isok = true, data = res, msg = "成功" });
+                }
+                else
+                {
+                    return new JsonResult(new { isok = false, data = "", msg = "该用户已经注册" });
+                }
+            }
+            catch(Exception exp)
+            {
+                logger.Info("更新用户信息时失败：" + exp.Message);
+                return new JsonResult(new { isok = false, data = exp.Message, msg = "失败" });
+            }
         }
 
         // DELETE: api/ApiWithActions/5
