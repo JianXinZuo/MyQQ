@@ -170,7 +170,7 @@ export default {
                     icon:'',
                     menuName:'刷新好友列表',
                     myEvent:()=>{
-                        console.log('扫一扫操作');
+                        this.UpdateList();
                     }
                 }
             ],
@@ -291,6 +291,22 @@ export default {
             });
 
         },
+        UpdateList(){
+            let user_id = localStorage.getItem('user_id');
+            user_id && this.$axios.get('/api/user/' + user_id).then((res)=>{
+                console.log(res);
+
+                if(res.isok){
+                    this.headImg = this.BaseURL + res.data.headImg;
+                    this.nickName = res.data.nickName;
+                    this.userName = res.data.userName;
+                    localStorage.setItem("Users", JSON.stringify(res.data));
+                }
+                
+            }).catch((err)=>{
+                console.log(err);
+            });
+        }
     }
 }
 </script>
