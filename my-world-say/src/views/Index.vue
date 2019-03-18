@@ -279,8 +279,8 @@ export default {
                 this.$axios.put('/api/User/' + user.id, user).then((res)=>{
 
                     console.log(res);
-                    localStorage.setItem('Users', JSON.stringify(res));
-                    this.$store.dispatch('UpdateAccount',res)
+                    localStorage.setItem('Users', JSON.stringify(res.data));
+                    this.$store.dispatch('UpdateAccount',res.data);
                 }).catch((err)=>{
                     
                     console.log(err);

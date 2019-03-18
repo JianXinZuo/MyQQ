@@ -136,9 +136,9 @@ export default {
             this.$axios.post('/api/FileUpLoad',formData,config).then(res =>{
                 console.log(res);
 
-                if(res.data.isok){
-                    this.avatarSrc = this.BaseURL + res.data.data;
-                    this.account.HeadImg = res.data.data;
+                if(res.isok){
+                    this.avatarSrc = this.BaseURL + res.data;
+                    this.account.HeadImg = res.data;
                 }
 
             }).catch((err)=>{
