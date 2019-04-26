@@ -49,6 +49,7 @@ export default {
         this.UserList = JSON.parse(list);
 
       console.log(this.UserList);
+      this.$store.dispatch('UpdateChatList', this.UserList);
     },
     mounted(){
         //let conn = new signalR.HubConnectionBuilder().withUrl("https://localhost:5001/myChatHub").build();

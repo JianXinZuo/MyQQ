@@ -277,14 +277,10 @@ export default {
                 user.headImg = tempImg;
 
                 this.$axios.put('/api/User/' + user.id, user).then((res)=>{
-
-                    console.log(res);
-                    localStorage.setItem('Users', JSON.stringify(res.data));
                     this.$store.dispatch('UpdateAccount',res.data);
                 }).catch((err)=>{
-                    
                     console.log(err);
-                })
+                });
 
             }).catch((err)=>{
                 console.log(err);
@@ -294,15 +290,12 @@ export default {
         UpdateList(){
             let user_id = localStorage.getItem('user_id');
             user_id && this.$axios.get('/api/user/' + user_id).then((res)=>{
-                console.log(res);
-
                 if(res.isok){
                     this.headImg = this.BaseURL + res.data.headImg;
                     this.nickName = res.data.nickName;
                     this.userName = res.data.userName;
-                    localStorage.setItem("Users", JSON.stringify(res.data));
+                    this.$store.dispatch('UpdateAccount',(res.data));
                 }
-                
             }).catch((err)=>{
                 console.log(err);
             });

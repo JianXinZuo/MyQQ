@@ -54,5 +54,10 @@ export default {
 
     SetChatUserList({ commit }, use_info) {
         commit('SetChatUserList', use_info);
+    },
+
+    //更新消息列表
+    UpdateChatList({ commit }, list) {
+        commit('UpdateChatList', list);
     }
 }

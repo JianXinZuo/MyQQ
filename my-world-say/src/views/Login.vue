@@ -103,12 +103,9 @@ export default {
                     localStorage.setItem('token',res.data.token);
                     localStorage.setItem('user_id',res.data.user.id);
                     localStorage.setItem('MyHeadImg', this.BaseURL + res.data.user.headImg);
-                    this.$store.dispatch("AccountLogin", res.data.user);
-
-                    //this.$store.dispatch('InitConnectStart');   //打开Signalr
-                    //this.$store.dispatch('ClientOnline');
-
-                    this.$router.push({ path:'/'});
+                    this.$store.dispatch("AccountLogin", res.data.user).then(()=>{
+                        this.$router.push({ path:'/'});
+                    });
                 }
                 this.toast = false;
             }).catch((err)=>{

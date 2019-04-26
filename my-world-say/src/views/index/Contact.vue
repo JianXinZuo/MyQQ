@@ -62,7 +62,6 @@ export default {
     methods:{
         OpenChat(info){
             localStorage.setItem('to_id',info.id);
-            //localStorage.setItem('CurrentChatUser',JSON.stringify(info));
             this.$store.dispatch('SetChatUserList',info).then((res)=>{
                 this.$router.push(
                 { 

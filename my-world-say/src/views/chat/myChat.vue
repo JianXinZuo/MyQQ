@@ -12,42 +12,45 @@
             </v-layout>
         </v-toolbar>
 
-        <div id="chat-container" class="chat chat-container" >
-            <div class="chat-top-loading" v-show="ChatLoading">
-                {{ ChatLoadingText }}
-                <span class="chat-top-loading-animate" >
-                    <svg data-v-ecaca2b0="" viewBox="0 0 64 64" class="spinner" style="fill: rgb(170, 170, 170); stroke: rgb(170, 170, 170);"><g stroke-width="4" stroke-linecap="round"><line y1="17" y2="29" transform="translate(32,32) rotate(180)"><animate attributeName="stroke-opacity" dur="750ms" values="1;.85;.7;.65;.55;.45;.35;.25;.15;.1;0;1" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(210)"><animate attributeName="stroke-opacity" dur="750ms" values="0;1;.85;.7;.65;.55;.45;.35;.25;.15;.1;0" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(240)"><animate attributeName="stroke-opacity" dur="750ms" values=".1;0;1;.85;.7;.65;.55;.45;.35;.25;.15;.1" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(270)"><animate attributeName="stroke-opacity" dur="750ms" values=".15;.1;0;1;.85;.7;.65;.55;.45;.35;.25;.15" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(300)"><animate attributeName="stroke-opacity" dur="750ms" values=".25;.15;.1;0;1;.85;.7;.65;.55;.45;.35;.25" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(330)"><animate attributeName="stroke-opacity" dur="750ms" values=".35;.25;.15;.1;0;1;.85;.7;.65;.55;.45;.35" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(0)"><animate attributeName="stroke-opacity" dur="750ms" values=".45;.35;.25;.15;.1;0;1;.85;.7;.65;.55;.45" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(30)"><animate attributeName="stroke-opacity" dur="750ms" values=".55;.45;.35;.25;.15;.1;0;1;.85;.7;.65;.55" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(60)"><animate attributeName="stroke-opacity" dur="750ms" values=".65;.55;.45;.35;.25;.15;.1;0;1;.85;.7;.65" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(90)"><animate attributeName="stroke-opacity" dur="750ms" values=".7;.65;.55;.45;.35;.25;.15;.1;0;1;.85;.7" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(120)"><animate attributeName="stroke-opacity" dur="750ms" values=".85;.7;.65;.55;.45;.35;.25;.15;.1;0;1;.85" repeatCount="indefinite"></animate></line><line y1="17" y2="29" transform="translate(32,32) rotate(150)"><animate attributeName="stroke-opacity" dur="750ms" values="1;.85;.7;.65;.55;.45;.35;.25;.15;.1;0;1" repeatCount="indefinite"></animate></line></g></svg>
-                </span>
-            </div>
-            <ul class="chat-list" v-scroll:#chat-container="onScroll">
+        
+          <div id="chat-container" class="chat-container" >
+            <scroller :on-refresh="refresh" ref="my_scroller">
+
+              <div class="chat-list" >
+
                 <template v-for="(item) in GetChatMassage">
-                    <li v-if="item.Type == 1" class="chat-item" :class="[ item.Me ? 'right' : 'left' ]">
-                        <img :src="BaseURL + item.From.HeadImg" class="chat-avatar"/>
-                        <div class="bubble-item" :class="[ item.Me ? 'bubble-dinosaur' : 'bubble-bear' ]">
-                        <span class="chat-content" v-text="item.Text"></span>
-                        <span class="cell cell-1"></span><span class="cell cell-2"></span>
-                        <span class="cell cell-3"></span><span class="cell cell-4"></span>
-                        <span class="cell cell-5"></span><span class="cell cell-6"></span>
-                        <span class="cell cell-7"></span><span class="cell cell-8"></span>
+                    <div v-if="item.Type == 1" class="chat-item" :class="[ item.Me ? 'right11' : 'left11' ]">
+                        <div>
+                          <img :src="BaseURL + item.From.HeadImg" class="chat-avatar"/>
+                          <div class="bubble-item" :class="[ item.Me ? 'bubble-dinosaur' : 'bubble-bear' ]">
+                            <span class="chat-content" v-text="item.Text"></span>
+                            <span class="cell cell-1"></span><span class="cell cell-2"></span>
+                            <span class="cell cell-3"></span><span class="cell cell-4"></span>
+                            <span class="cell cell-5"></span><span class="cell cell-6"></span>
+                            <span class="cell cell-7"></span><span class="cell cell-8"></span>
+                          </div>
                         </div>
-                    </li>
+                    </div>
                     
-                    <li v-else-if="item.Type == 2" class="chat-item" :class="[ item.Me ? 'right' : 'left' ]">
-                        <img :src="BaseURL + item.From.HeadImg" class="chat-avatar"/>
-                        <div class="bubble-item" :class="[ item.Me ? 'bubble-dinosaur' : 'bubble-bear' ]">
-                        <span class="chat-content" @click="PlayVideo(item)">(((语音消息)))</span>
-                        <span class="cell cell-1"></span><span class="cell cell-2"></span>
-                        <span class="cell cell-3"></span><span class="cell cell-4"></span>
-                        <span class="cell cell-5"></span><span class="cell cell-6"></span>
-                        <span class="cell cell-7"></span><span class="cell cell-8"></span>
+                    <!-- <div v-else-if="item.Type == 2" class="chat-item" :class="[ item.Me ? 'right' : 'left' ]">
+                        <div>
+                          <img :src="BaseURL + item.From.HeadImg" class="chat-avatar"/>
+                          <div class="bubble-item" :class="[ item.Me ? 'bubble-dinosaur' : 'bubble-bear' ]">
+                            <span class="chat-content" @click="PlayVideo(item)">(((语音消息)))</span>
+                            <span class="cell cell-1"></span><span class="cell cell-2"></span>
+                            <span class="cell cell-3"></span><span class="cell cell-4"></span>
+                            <span class="cell cell-5"></span><span class="cell cell-6"></span>
+                            <span class="cell cell-7"></span><span class="cell cell-8"></span>
+                          </div>
                         </div>
-                    </li>
+                    </div> -->
 
                 </template>
+              </div>
+            </scroller>
+          </div>
+         
 
-            </ul>
-
-        </div>
         <div id="div_speak" class="chat-speak">
             <div class="input-bar">
                 <div class="left-area">
@@ -76,18 +79,17 @@ export default {
     name:'MyChat',
     data () {
         return {
+            ContainerHeight:0,
+            noDate:false,//这是一个判断是否加载的开关
             BaseURL:'https://chatdemo01.blob.core.windows.net/',
             user_id: '',
             to_id:'',
             CurrentChatUser: {},
-            ChatLoadingText:'正在加载中...',
-            ChatLoading: false,
             LoadTimeOut: 1500,
             dom:null,
             pageIndex: 1,
             pageSize: 10,
             StopLoadData:false,
-            scrollHeight:0,
             MessageType:0,
             message:''
         }
@@ -101,56 +103,10 @@ export default {
         this.CurrentChatUser = toUser;
         console.log('创建成功');
 
-        //if()
     },
     mounted(){
-        this.dom = document.getElementById('chat-container');
-        let num = this.dom.scrollHeight;
-        if(this.dom.scrollTo){
-            this.dom.scrollTo(0,num);
-        }else{
-            this.dom.scrollHeight = num;
-        }
-
-        if(this.GetChatMassage == null || this.GetChatMassage.length == 0){
-            this.ChatLoading = true;
-
-            this.$axios.get('api/ChatMessage/List?from=' + 
-                this.user_id + '&to=' + this.to_id + '&index='+ this.pageIndex +'&size=' + this.pageSize
-            ).then((res)=>{
-                console.log(res);
-                this.ChatLoading = false;
-
-                if(res.data.length >= this.pageSize){
-                    this.pageIndex ++;
-                    this.StopLoadData = false;
-                }else{
-                    this.StopLoadData = true;
-                }
-
-                if(res.isok === true && res.total >0){
-                    this.$store.dispatch('LoadChatMsg',res.data);
-                    setTimeout(() => {
-                        let num = this.dom.scrollHeight;
-                        this.dom.scrollTo(0,num);
-                    }, 50);
-                }
-            }).catch((err)=>{
-                console.log(err);
-            });
-            
-        }else{
-            let len = this.GetChatMassage.length;
-            let index = parseInt(len / this.pageSize);
-            let remainder = len % this.pageSize;
-            
-            if(remainder === 0){
-                this.pageIndex = (index + 1);
-            }else{
-                this.pageIndex = (index + 2);
-            }
-            
-        }
+        this.GetList();
+        this.Resize();
     },
     components:{
         VEditDiv
@@ -165,68 +121,40 @@ export default {
     },
     watch:{
         MyReceiveCount(){
-            setTimeout(() => {
-                let num = this.dom.scrollHeight;
-                this.dom.scrollTo(0,num);
-                console.log();
-            }, 0);
+          this.Resize();
         }
     },
     methods: {
-        onScroll(e){
-            if(e.target.scrollTop == 0){
-                let model = {
-                    "Id":"874410e8-5931-4d46-9339-8c3a072db89e",
-                    "From":{"Id":"16dcda59-37a1-4b1f-aa9e-db1af5bb3bfe",
-                        "UserName":"admin",
-                        "NickName":"小新",
-                        "HeadImg":"/upload/1c0ffb31-653f-4531-8410-6ea53a380950.jpg",
-                        "Mobile":null,
-                        "Sex":true,
-                        "Age":20
-                    },
-                    "To":{
-                        "Id":"16dcda59-37a1-4b1f-aa9e-db1af5bb3bfe",
-                        "UserName":"admin",
-                        "NickName":"小新",
-                        "HeadImg":"/upload/1c0ffb31-653f-4531-8410-6ea53a380950.jpg",
-                        "Mobile":null,"Sex":true,"Age":20
-                    },
-                    "Text":"sdsd",
-                    "Type":1,
-                    "CreateTime":"2018-10-11T18:03:48.8788752+08:00"
-                }
-                this.ChatLoading = true;
+        Resize(){
+          var that = this;
+          setTimeout(()=>{
+            let obj = that.$refs.my_scroller.scroller.getScrollMax();
+            console.log(that.$refs.my_scroller);
+            that.$refs.my_scroller.scrollTo(0, obj.top, true);
+          },100);
+          
+        },
+        GetList(){
+            this.$axios.get('api/ChatMessage/List?from=' + this.user_id + '&to=' + this.to_id + '&index='+ this.pageIndex +'&size=' + this.pageSize).then((res)=>{
+                      console.log(res);
+                      if(res.data.length >= this.pageSize){
+                          this.pageIndex ++;
+                          this.$refs.my_scroller.finishPullToRefresh();
+                      }else{
+                          this.$refs.my_scroller.finishInfinite(true);
+                      }
 
-                if(this.StopLoadData === true){
-                    this.ChatLoadingText ='没有更多数据...';
-                    setTimeout(() => {
-                        this.ChatLoading = false;
-                        this.ChatLoadingText ='正在加载中...';
-                    }, 500);
-                    return
-                }
-                this.$axios.get('api/ChatMessage/List?from=' + 
-                    this.user_id + '&to=' + this.to_id + '&index='+ this.pageIndex +'&size=' + this.pageSize
-                ).then((res)=>{
-                    this.ChatLoading = false;
-                    if(res.isok === true && res.total >0){
-
-                        this.$store.dispatch('LoadChatMsg',res.data);
-                        let num = e.target.scrollHeight - this.scrollHeight;
-                        e.target.scrollTop = num;
-                        this.scrollHeight = e.target.scrollHeight;
-                        if(res.data.length >= this.pageSize){
-                            this.pageIndex ++;
-                            this.StopLoadData = false;
-                        }else{
-                            this.StopLoadData = true;
-                        }
-                    }
-                }).catch((err)=>{
-                    console.log(err);
-                });
-            }
+                      if(res.isok === true && res.total >0){
+                          this.$store.dispatch('LoadChatMsg',res.data);
+                      }
+                  }).catch((err)=>{
+                      console.log(err);
+                  });
+            // if(this.GetChatMassage == null || this.GetChatMassage.length == 0){
+            // }
+        },
+        refresh(){
+          this.GetList();
         },
         GotoBack(){
             this.$router.go(-1);
@@ -242,6 +170,7 @@ export default {
             if(msg){
                 MyConnection.invoke("SendMessage", msgId, this.user_id, this.to_id, msg, "text").then(()=>{
                     console.log('发送消息：',msg,'完毕');
+
                 }).catch(function (err) {
                     return console.error(err.toString());
                 });
@@ -251,20 +180,16 @@ export default {
 }
 </script>
 <style>
+
 * {
   margin: 0;
   padding: 0;
 }
-ol, ul {
-    padding-left: 0px;
-}
 .chat-container{
-    position: relative;
-    flex-direction: column;
-    overflow: scroll;
-    padding: 10px 20px;
     width:100%;
-    overflow-y: scroll;
+    height: 81%;
+    position:fixed;
+    display: block;
 }
 .chat-top-loading{
     text-align: center;
@@ -352,46 +277,16 @@ ol, ul {
     -webkit-flex: 1;
     overflow: hidden;
 }
-@media screen and (max-height:568px){
-    .chat{
-        height: 455px;
-    }
-}
-@media screen and (max-height:640px) and (min-height:569px){
-    .chat{
-        height: 528px;
-    }
-}
-@media screen and (max-height:667px) and (min-height:641px){
-    .chat{
-        height: 555px;
-    }
-}
-@media screen and (max-height:731px) and (min-height:668px){
-    .chat{
-        height: 618px;
-    }
-}
-@media screen and (max-height:736px) and (min-height:732px){
-    .chat{
-        height: 624px;
-    }
-}
-@media screen and (max-height:812px) and (min-height:737px){
-    .chat{
-        height: 700px;
-    }
-}
-@media screen and (max-height:823px) and (min-height:813px){
-    .chat{
-        height: 711px;
-    }
+.chat{
+  display: block;
+  height: 82%;
+  position:fixed;
 }
 
 div[contenteditable="true"]{-webkit-user-modify: read-write-plaintext-only; }
 .chat-speak{
     position:relative;z-index:1;-webkit-flex:0 0 auto;flex:0 0 auto;background-color:#fff; -webkit-touch-callout:none;
-    position:absolute;bottom:0;left:0;right:0; 
+    position:absolute;bottom:0;left:0;right:0; height: 10%;
     /* overflow:hidden;  */
 }
 .chat-speak .input-bar{position:relative;padding:10px 0;display:-webkit-flex;display:flex;-webkit-justify-content:space-between;justify-content:space-between;-webkit-align-items:flex-end;align-items:flex-end;}
@@ -427,12 +322,18 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   padding-top: 5px;
 }
 
-.chat-item.left {
-  float: left;
+.chat-item.left11 {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding-left: 3%;
 }
 
-.chat-item.right {
-  float: right;
+.chat-item.right11 {
+  display: block;
+  width: 100%;
+  text-align: right;
+  padding-right: 3%;
 }
 
 .chat-item:after {
@@ -457,21 +358,21 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   max-width: 80%;
 }
 
-.chat-item.left .chat-avatar,
-.chat-item.left .bubble-item {
+.chat-item.left11 .chat-avatar,
+.chat-item.left11 .bubble-item {
   float: left;
 }
 
-.chat-item.right .chat-avatar,
-.chat-item.right .bubble-item {
+.chat-item.right11 .chat-avatar,
+.chat-item.right11.bubble-item {
   float: right;
 }
 
-.chat-item.left .chat-avatar {
+.chat-item.left11 .chat-avatar {
   margin-right: 10px;
 }
 
-.chat-item.right .chat-avatar {
+.chat-item.right11 .chat-avatar {
   margin-left: 10px;
 }
 
@@ -507,15 +408,14 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
     z-index: 10;
 }
 
-/* bear */
 
-.left .bubble-bear .chat-content {
+.left11 .bubble-bear .chat-content {
   margin: 17px 32px 15px 18px;
   display: inline-block;
   background-color: #fff8ef;
 }
 
-.left .bubble-bear .cell-1 {
+.left11 .bubble-bear .cell-1 {
   left: 0;
   top: 6px;
   width: 20px;
@@ -523,7 +423,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -3px -10px;
 }
 
-.left .bubble-bear .cell-2 {
+.left11 .bubble-bear .cell-2 {
   left: 20px;
   top: 11px;
   right: 20px;
@@ -532,7 +432,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-top: 1px solid #835426;
 }
 
-.left .bubble-bear .cell-3 {
+.left11 .bubble-bear .cell-3 {
   right: 0;
   top: 0;
   width: 60px;
@@ -540,7 +440,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -58px -4px;
 }
 
-.left .bubble-bear .cell-4 {
+.left11 .bubble-bear .cell-4 {
   top: 28px;
   right: 6px;
   bottom: 10px;
@@ -549,7 +449,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-right: 1px solid #835426;
 }
 
-.left .bubble-bear .cell-5 {
+.left11 .bubble-bear .cell-5 {
   right: 0;
   bottom: 0;
   width: 60px;
@@ -557,7 +457,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -58px -50px;
 }
 
-.left .bubble-bear .cell-6 {
+.left11 .bubble-bear .cell-6 {
   right: 60px;
   bottom: 6px;
   left: 20px;
@@ -566,7 +466,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-bottom: 1px solid #835426;
 }
 
-.left .bubble-bear .cell-7 {
+.left11 .bubble-bear .cell-7 {
   left: 0;
   bottom: 0;
   width: 20px;
@@ -574,7 +474,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -3px -46px;
 }
 
-.left .bubble-bear .cell-8 {
+.left11 .bubble-bear .cell-8 {
   top: 25px;
   bottom: 20px;
   left: 4px;
@@ -583,13 +483,13 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-left: 1px solid #835426;
 }
 
-.right .bubble-bear .chat-content {
+.right11 .bubble-bear .chat-content {
   margin: 18px 18px 8px 32px;
   display: inline-block;
   background-color: #fff8ef;
 }
 
-.right .bubble-bear .cell-1 {
+.right11 .bubble-bear .cell-1 {
   left: 2px;
   top: 0;
   width: 60px;
@@ -597,7 +497,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -124px -4px;
 }
 
-.right .bubble-bear .cell-2 {
+.right11 .bubble-bear .cell-2 {
   left: 60px;
   top: 11px;
   right: 20px;
@@ -606,7 +506,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-top: 1px solid #835426;
 }
 
-.right .bubble-bear .cell-3 {
+.right11 .bubble-bear .cell-3 {
   right: 0;
   top: 5px;
   width: 20px;
@@ -614,7 +514,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -219px -8px;
 }
 
-.right .bubble-bear .cell-4 {
+.right11 .bubble-bear .cell-4 {
   top: 23px;
   right: 6px;
   bottom: 16px;
@@ -623,7 +523,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-right: 1px solid #835426;
 }
 
-.right .bubble-bear .cell-5 {
+.right11 .bubble-bear .cell-5 {
   right: 0;
   bottom: 0;
   width: 20px;
@@ -631,7 +531,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -219px -43px;
 }
 
-.right .bubble-bear .cell-6 {
+.right11 .bubble-bear .cell-6 {
   right: 20px;
   bottom: 0;
   left: 20px;
@@ -640,7 +540,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-bottom: 1px solid #835426;
 }
 
-.right .bubble-bear .cell-7 {
+.right11 .bubble-bear .cell-7 {
   left: 0;
   bottom: 0;
   width: 40px;
@@ -648,7 +548,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -122px -40px;
 }
 
-.right .bubble-bear .cell-8 {
+.right11 .bubble-bear .cell-8 {
   top: 28px;
   bottom: 20px;
   left: 6px;
@@ -659,14 +559,14 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
 
 /* dinosaur */
 
-.left .bubble-dinosaur .chat-content {
+.left11 .bubble-dinosaur .chat-content {
   margin: 17px 32px 10px 18px;
   display: inline-block;
   background-color: #8acc8e;
   color: #030001;
 }
 
-.left .bubble-dinosaur .cell-1 {
+.left11 .bubble-dinosaur .cell-1 {
   left: 0;
   top: 6px;
   width: 20px;
@@ -674,7 +574,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -3px -74px;
 }
 
-.left .bubble-dinosaur .cell-2 {
+.left11 .bubble-dinosaur .cell-2 {
   left: 20px;
   top: 11px;
   right: 20px;
@@ -683,7 +583,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-top: 1px solid #030001;
 }
 
-.left .bubble-dinosaur .cell-3 {
+.left11 .bubble-dinosaur .cell-3 {
   right: 0;
   top: 0;
   width: 70px;
@@ -691,7 +591,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -48px -68px;
 }
 
-.left .bubble-dinosaur .cell-4 {
+.left11 .bubble-dinosaur .cell-4 {
   top: 28px;
   right: 6px;
   bottom: 10px;
@@ -700,7 +600,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-right: 1px solid #030001;
 }
 
-.left .bubble-dinosaur .cell-5 {
+.left11 .bubble-dinosaur .cell-5 {
   right: 0;
   bottom: 0;
   width: 60px;
@@ -708,7 +608,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -55px -108px;
 }
 
-.left .bubble-dinosaur .cell-6 {
+.left11 .bubble-dinosaur .cell-6 {
   right: 60px;
   bottom: 0;
   left: 20px;
@@ -717,7 +617,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-bottom: 1px solid #030001;
 }
 
-.left .bubble-dinosaur .cell-7 {
+.left11 .bubble-dinosaur .cell-7 {
   left: 0;
   bottom: 0;
   width: 20px;
@@ -725,7 +625,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -3px -104px;
 }
 
-.left .bubble-dinosaur .cell-8 {
+.left11 .bubble-dinosaur .cell-8 {
   top: 25px;
   bottom: 20px;
   left: 5px;
@@ -734,14 +634,14 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-left: 1px solid #030001;
 }
 
-.right .bubble-dinosaur .chat-content {
+.right11 .bubble-dinosaur .chat-content {
   margin: 18px 18px 10px 38px;
   display: inline-block;
   background-color: #8acc8e;
   color: #030001;
 }
 
-.right .bubble-dinosaur .cell-1 {
+.right11 .bubble-dinosaur .cell-1 {
   left: 2px;
   top: 0;
   width: 40px;
@@ -749,7 +649,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -120px -68px;
 }
 
-.right .bubble-dinosaur .cell-2 {
+.right11 .bubble-dinosaur .cell-2 {
   left: 40px;
   top: 10px;
   right: 20px;
@@ -758,7 +658,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-top: 1px solid #030001;
 }
 
-.right .bubble-dinosaur .cell-3 {
+.right11 .bubble-dinosaur .cell-3 {
   right: 0;
   top: 0;
   width: 20px;
@@ -766,7 +666,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -219px -70px;
 }
 
-.right .bubble-dinosaur .cell-4 {
+.right11 .bubble-dinosaur .cell-4 {
   top: 26px;
   right: 8px;
   bottom: 20px;
@@ -775,7 +675,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-right: 1px solid #030001;
 }
 
-.right .bubble-dinosaur .cell-5 {
+.right11 .bubble-dinosaur .cell-5 {
   right: 1px;
   bottom: 0;
   width: 20px;
@@ -783,7 +683,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -218px -100px;
 }
 
-.right .bubble-dinosaur .cell-6 {
+.right11 .bubble-dinosaur .cell-6 {
   right: 20px;
   bottom: 0;
   left: 30px;
@@ -792,7 +692,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   border-bottom: 1px solid #030001;
 }
 
-.right .bubble-dinosaur .cell-7 {
+.right11 .bubble-dinosaur .cell-7 {
   left: 4px;
   bottom: 0;
   width: 40px;
@@ -800,7 +700,7 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   background-position: -122px -108px;
 }
 
-.right .bubble-dinosaur .cell-8 {
+.right11 .bubble-dinosaur .cell-8 {
   top: 33px;
   bottom: 16px;
   left: 12px;
@@ -811,8 +711,8 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
 
 /* luffy */
 
-.left .bubble-luffy .chat-content,
-.right .bubble-luffy .chat-content{
+.left11 .bubble-luffy .chat-content,
+.right11 .bubble-luffy .chat-content{
   background-color: #feefc8;
   color: #000;
   border: 1px solid #000;
@@ -820,13 +720,13 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   padding: 10px;
 }
 
-.left .bubble-luffy .chat-content {
+.left11 .bubble-luffy .chat-content {
   margin: 20px 35px 10px 0;
   display: inline-block;
   padding-right: 20px;
 }
 
-.left .bubble-luffy .cell-5 {
+.left11 .bubble-luffy .cell-5 {
   right: 0;
   bottom: 0;
   width: 50px;
@@ -835,40 +735,18 @@ input#content img.face{vertical-align:middle;margin-top:-0.1em;width:20px;height
   z-index: 10;
 }
 
-.right .bubble-luffy .chat-content {
+.right11 .bubble-luffy .chat-content {
   margin: 20px 0 10px 35px;
   display: inline-block;
   padding-left: 20px;
 }
 
-.right .bubble-luffy .cell-7 {
+.right11 .bubble-luffy .cell-7 {
   left: 4px;
   bottom: 0;
   width: 50px;
   height: 70px;
   background-position: -62px -130px;
   z-index: 10;
-}
-
-/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
-::-webkit-scrollbar 
-{ 
-    width: 2px;
-    height: 0px; 
-    background-color: #F5F5F5; 
-} 
-/*定义滚动条轨道 内阴影+圆角*/
-::-webkit-scrollbar-track 
-{ 
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
-    border-radius: 1px; 
-    background-color: #F5F5F5; 
-}
-/*定义滑块 内阴影+圆角*/ 
-::-webkit-scrollbar-thumb 
-{ 
-    border-radius: 10px; 
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3); 
-    background-color: #555; 
 }
 </style>

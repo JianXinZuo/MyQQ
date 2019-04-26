@@ -19,31 +19,31 @@ let axiosIns = axios.create({});
 
 //生产环境
 if (process.env.NODE_ENV == 'production') {
-    axiosIns.defaults.baseURL = process.env.API_ROOT;   
+    axiosIns.defaults.baseURL = process.env.API_ROOT;
 }
 
 axiosIns.defaults.headers.post['X-Requested-With'] = 'XMLHttpRequest';
 axiosIns.defaults.headers.get['X-Requested-With'] = 'XMLHttpRequest';
 axiosIns.defaults.contentType = 'application/json';
 
-axiosIns.defaults.validateStatus = function (status) {
-  return true;
+axiosIns.defaults.validateStatus = function(status) {
+    return true;
 };
 
 //配置拦截器AOP
-axiosIns.interceptors.request.use(function (config) {
-  //配置config
-  // config.headers.Accept = 'application/json';
+axiosIns.interceptors.request.use(function(config) {
+    //配置config
+    // config.headers.Accept = 'application/json';
 
-  let token = localStorage.getItem('token');
-  if(token){
-     config.headers.Authorization = 'bearer '+token;
-  }
+    let token = localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = 'bearer ' + token;
+    }
 
-  return config;
+    return config;
 });
 
-axiosIns.interceptors.response.use(function (response) {
+axiosIns.interceptors.response.use(function(response) {
     let data = response.data;
 
     if (response.status === 200) {
@@ -53,24 +53,28 @@ axiosIns.interceptors.response.use(function (response) {
     }
 });
 
-let ajaxMethod = ['get','post','put','delete'];
+let ajaxMethod = ['get', 'post', 'put', 'delete'];
 let api = {};
 
-ajaxMethod.forEach((method)=> {
-  api[method] = function (uri, data, config) {
-      return new Promise(function (resolve, reject) {
-          axiosIns[method](uri, data, config).then((res)=> {
+ajaxMethod.forEach((method) => {
+
+    api[method] = function(uri, data, config) {
+
+        return new Promise(function(resolve, reject) {
+
+            axiosIns[method](uri, data, config).then((res) => {
                 //console.log(res);    
                 resolve(res.data);
-          }).catch((err)=> {
+            }).catch((err) => {
                 console.log(err);
-                if(err.status === 401 && err.statusText === "Unauthorized"){
-                    router.push({ path:'/login'});
+                if (err.status === 401 && err.statusText === "Unauthorized") {
+                    router.push({ path: '/login' });
                 }
                 reject(err);
-          })
-      })
-  }
+            });
+
+        });
+    }
 });
 
 Vue.prototype.$axios = api;
@@ -78,37 +82,35 @@ Vue.prototype.$axios = api;
 //导航守卫
 router.beforeEach((to, from, next) => {
     let is_login = false;
-    
-    try{
+
+    try {
         is_login = JSON.parse(localStorage.getItem("IsLogin"));
-    }catch(e){
+    } catch (e) {
         console.log(e);
     }
-    
-    if (to.meta.requireAuth) {  // 判断该路由是否需要登录权限
-        if (store.state.IsLogin || is_login) {  // 通过vuex state获取当前的token是否存在
+
+    if (to.meta.requireAuth) { // 判断该路由是否需要登录权限
+        if (store.state.IsLogin || is_login) { // 通过vuex state获取当前的token是否存在
             next();
-        }
-        else {
+        } else {
             next({
                 path: '/login',
-                query: {redirect: to.fullPath}  // 将跳转的路由path作为参数，登录成功后跳转到该路由
+                query: { redirect: to.fullPath } // 将跳转的路由path作为参数，登录成功后跳转到该路由
             })
         }
-    } 
-    else {
+    } else {
         next();
     }
 })
 
-Date.prototype.format = function (format) {
+Date.prototype.format = function(format) {
     var args = {
         "M+": this.getMonth() + 1,
         "d+": this.getDate(),
         "h+": this.getHours(),
         "m+": this.getMinutes(),
         "s+": this.getSeconds(),
-        "q+": Math.floor((this.getMonth() + 3) / 3),  //quarter
+        "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
         "S": this.getMilliseconds()
     };
     if (/(y+)/.test(format))
@@ -121,66 +123,11 @@ Date.prototype.format = function (format) {
     return format;
 };
 
-//自定义指令
-// Vue.directive('content', {
-//     twoWay: true,
-//     bind: function () {
-//         this.handler = function () {
-//             this.set(this.el.innerHTML)
-//         }.bind(this)
-//         this.el.addEventListener('keyup', this.handler)
-//     },
-//     update: function (newValue, oldValue) {
-//         this.el.innerHTML = newValue || ''
-//     },
-//     unbind: function () {
-//         this.el.removeEventListener('keyup', this.handler)
-//     }
-// });
-
-//收消息
-// MyConnection.on("StartCallBackFunc",(connid, txt )=>{
-//     console.log(connid,txt);
-// });
-
-// MyConnection.on("OnlineCallbackFunc",(msg)=>{
-//     console.log(msg);
-// });
-
-// //断开链接方法
-// MyConnection.on("OnDisconnectedAsync",(msg)=>{
-//     console.log('断开链接方法：',msg);
-// });
-
-// MyConnection.on("ReceiveMessage", (msg)=>{
-//     console.log(msg);
-//     store.dispatch('AccpetChatMsg', msg);
-// });
-
-// MyConnection.on("ClientNoticeRemind",(msg)=>{
-//     console.log(msg);
-//     store.dispatch('ClientNoticeRemind',msg);
-// });
-
-// //对方同意添加你为好友
-// MyConnection.on("ReceiveAgreeFriendByFromUser",(res)=>{
-//     console.log(res);
-// });
-// //同意添加好友成功
-// MyConnection.on("ReceiveAgreeFriendByToUser",(res)=>{
-//     console.log(res);
-// });
-
-// //对方拒绝添加你为好友
-// MyConnection.on("ReceiveRejectFriendByFromUser",(res)=>{
-//     console.log(res);
-// });
-
 /* eslint-disable no-new */
 new Vue({
-  store,
-  el: '#app',
-  router,
-  components: { App },
-  template: '<App/>'
+    store,
+    el: '#app',
+    router,
+    components: { App },
+    template: '<App/>'
 })

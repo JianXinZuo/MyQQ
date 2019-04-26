@@ -89,10 +89,10 @@
         </v-card>
 
         <v-dialog v-model="toast" hide-overlay persistent width="300">
-            <v-card color="primary" dark>
+            <v-card color="error" dark >
                 <v-card-text>
                     {{ toastText }}
-                    <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
+                    <v-progress-linear indeterminate color="white" class="mb-0" v-show="IsProgressShow"></v-progress-linear>
                 </v-card-text>
             </v-card>
         </v-dialog>
@@ -103,12 +103,14 @@
 </template>
 
 <script>
+import qs from "qs";
 export default {
     name:'AddPerson',
     data () {
         return {
             BaseURL:'https://chatdemo01.blob.core.windows.net/',
             toastText: '正在添加好友...',
+            IsProgressShow: true,
             toast: false, 
             isLoading: false,
             headImg:'',
@@ -149,7 +151,7 @@ export default {
                     return console.error(err.toString());
                 });
             }else{
-                console.log('');
+                this.IsProgressShow = false;
                 this.toastText = '无法添加自己为好友';
                 this.toast = true;
                 setTimeout(() => {
